@@ -1,0 +1,42 @@
+version: '2'
+
+networks:
+    ghost:
+
+services:
+    ghost-app:
+        image: ghost:1.22.0
+        networks:
+            - ghost
+        depends_on:
+            - db
+        ports:
+            - "2368:2368"
+        environment:
+            database__client: mysql
+            database__connection__host: db
+            database__connection__user: root 
+            database__connection__password: ghost
+            database__connection__database: ghost
+
+    nginx:
+        build: nginx
+        networks:
+            - ghost
+        depends_on:
+            - ghost-app
+        ports:
+            - "80:80"
+
+    db:
+        image: "mysql:5.7.21"
+        networks:
+            - ghost
+        environment:
+            MYSQL_ROOT_PASSWORD: ghost
+            MYSQL_USER: ghost
+            MYSQL_PASSWORD: ghost
+        volumes:
+            - $PWD/data:/var/lib/mysql
+        ports:
+            - "3306:3306"
