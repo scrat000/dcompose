@@ -1,3 +1,2 @@
-FROM ghost:1.19
+FROM ghost
 EXPOSE 2368
-CMD ["npm","start","--production"]
